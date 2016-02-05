@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/15 08:13:18 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/05 19:36:57 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/05 22:02:14 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_l						*listadd(t_l *list, char *arg);
 t_l						*freeafflist(t_l *list);
 t_l						*sor(t_l *list);
 t_l						*sort(t_l *list, char *flag);
-t_work					recupft(t_work file, DIR *rep, t_dirent *ent, char *rstr);
+t_l						*recupft(t_work file, DIR *rep, t_dirent *ent, char *rstr);
 t_l						*afffile(t_l *ftab, char *flag);
 char					*affflagl(char *str, char *tmp);
 

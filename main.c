@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:28:12 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/05 20:06:21 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/05 22:40:01 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,22 @@ int			nextmain(t_l *rtab, char *flag)
 		ft_putstr(rtab->str); // !! si no error, no arg, pas afficher au premier tour
 		ft_putstr(":\n"); //
 		if ((rep = opendir(rtab->str)))
-			file = recupft(file, rep, ent, rtab->str); // on recup les dossiers et fichiers;
+			file.rtab = recupft(file, rep, ent, rtab->str); // on recup les dossiers et fichiers;
 		else
-			erroret(rtab->str);
+			return (erroret(rtab->str));
 		if (closedir(rep) == -1)
 			return (erroret(""));
-		file.ftab = afffile(file.ftab, file.flag); // free and aff ftab;
 		ft_putstr("\n");
-		tmp = file.rtab;
-		while (file.rtab)
-		{
-			ft_putstr(file.rtab->str);
-			file.rtab = file.rtab->next;
-		}
-		file.rtab = tmp;
 		free(rtab->str);
 		tmp = rtab->next;
 		free(rtab);
 		rtab = tmp;
 		if (isflag(flag, 'R') && file.rtab)
-			return (nextmain(file.rtab, file.flag));
+		{
+			nextmain(file.rtab, file.flag);
+		}
 	}
 	rtab = NULL;
-	free(flag);
 	return (0);
 }
 
@@ -76,5 +69,7 @@ int			main(int argc, char **argv)
 	sort(sarg.trep, sarg.flag); //sort is ok
 	sor(sarg.terror); //sor is ok;
 	sarg.terror = freeafflist(sarg.terror);
-	return (nextmain(sarg.trep, sarg.flag));
+	nextmain(sarg.trep, sarg.flag);
+	free(sarg.flag);
+	return (0);
 }
