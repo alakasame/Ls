@@ -1,0 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   recupft.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/02/05 19:29:53 by cmichaud          #+#    #+#             */
+/*   Updated: 2016/02/05 19:32:59 by cmichaud         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_ls.h"
+
+t_work      recupft(t_work file, DIR *rep, t_dirent *ent)
+{
+    while ((ent = readdir(rep)))
+    {
+        if ((isflag(file.flag, 'a') || ent->d_name[0] != '.')
+            && isopen(ent->d_name) && ft_strcmp(ent->d_name, ".")
+            && ft_strcmp(ent->d_name, ".."))
+            file.rtab = listadd(file.rtab, ent->d_name);
+        if (isflag(file.flag, 'a') || ent->d_name[0] != '.')
+            file.ftab = listadd(file.ftab, ent->d_name);
+    }
+    if (file.ftab)
+        sort(file.ftab, file.flag);
+    if (file.rtab)
+        sort(file.rtab, file.flag);
+    return (file);
+}

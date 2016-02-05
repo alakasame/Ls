@@ -1,0 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   outils.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
+/*   Updated: 2016/02/04 09:05:55 by cmichaud         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_ls.h"
+
+int			erroret(char *str)
+{
+	if (str != NULL)
+		ft_putstr("ls: ");
+	perror(str);
+	return (0);
+}
+
+t_l			*freeafflist(t_l *list)
+{
+	DIR *rep;
+	t_l *listnext;
+
+	while (list)
+	{
+		if (!(rep = opendir(list->str)))
+			erroret(list->str);
+		listnext = list->next;
+		free(list->str);
+		free(list);
+		list = listnext;
+	}
+	list = NULL;
+	return (list);
+}
+
+t_l		*afffile(t_l *ftab, char *flag)
+{
+	t_l		*tmp;
+	char	*str;
+
+	str = NULL;
+	while (ftab)
+	{
+		if (isflag(flag, 'l'))
+			str = affflagl(ftab->str, str);
+		else
+		{
+			ft_putstr(ftab->str);
+			ft_putstr("\t");
+		}
+		free(ftab->str);
+		tmp = ftab->next;
+		free(ftab);
+		ftab = tmp;
+	}
+	ftab = NULL;
+	return (ftab);
+}
+
+t_work		recupft(t_work file, DIR *rep, t_dirent *ent)
+{
+	while ((ent = readdir(rep)))
+	{
+		if ((isflag(file.flag, 'a') || ent->d_name[0] != '.')
+			&& isopen(ent->d_name) && ft_strcmp(ent->d_name, ".")
+			&& ft_strcmp(ent->d_name, ".."))
+			file.rtab = listadd(file.rtab, ent->d_name);
+		if (isflag(file.flag, 'a') || ent->d_name[0] != '.')
+			file.ftab = listadd(file.ftab, ent->d_name);
+	}
+	sort(file.ftab, file.flag);
+	sort(file.rtab, file.flag);
+	return (file);
+}
+
+int			isopen(char *str)
+{
+	DIR *rep;
+
+	if ((rep = opendir(str)) == NULL)
+		return (0);
+	if (closedir(rep) == -1)
+		return (erroret(str));
+	return (1);
+}
+
