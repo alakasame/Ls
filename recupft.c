@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/05 19:29:53 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/08 02:01:11 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/08 06:58:48 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,13 @@ t_l			*recupft(t_work file, DIR *rep, t_dirent *ent, char *path) // CREE DES FON
 		if (isflag(file.flag, 'a') || ent->d_name[0] != '.')
             file.ftab = listadd(file.ftab, ent->d_name, path, file.flag);
     }
+	/*
+	if (file.rtab)
+		sort(file.rtab, file.flag, path);
     if (file.ftab)
+	{
+		sort(file.ftab, file.flag, path);
 		file.ftab = afffile(file.ftab, file.flag, path);
+		}*/
     return (file.rtab);
 }

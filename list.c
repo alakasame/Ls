@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/03 02:06:00 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/08 03:41:21 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/08 06:46:55 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,60 +22,46 @@ t_l		*listdelone(t_l *list)
 	return (list);
 }
 
-t_l		**insertlist(t_l **list, char *str)
+t_l		*insertlist(t_l *list, t_l *base, char *str)
 {
-	t_l		*nlist;
+	char	*tmp;
+	char	*buf;
 
-	if (!(nlist = (t_l *)malloc(sizeof(t_l))))
+	(void)base;
+	tmp = list->str;
+	list->str = ft_strdup(str);
+	while (list->next != NULL)
+	{
+		list = list->next;
+		buf = list->str;
+		list->str = tmp;
+		tmp = buf;
+	}
+	if (!(list->next = (t_l *)malloc(sizeof(t_l))))
 		return (0);
-	nlist->str = ft_strdup(str);
-	if ((*list)->back == NULL)
-	{
-		(*list)->back = nlist;
-		nlist->next = (*list);
-		nlist->back = NULL;
-	}
-	else
-	{
-		ft_putstr("\nSTR  : ");
-		ft_putstr(str);
-		nlist->back = (*list)->back;
-		nlist->next = (*list);
-		(*list)->back = nlist;
-		ft_putstr(" NLIST ");
-		ft_putstr(nlist->back->str);
-		ft_putstr(" --- ");
-		ft_putstr(nlist->str);
-		ft_putstr(" --- ");
-		if (nlist->next)
-			ft_putstr(nlist->next->str);
-		ft_putstr(" LIST ");
-		ft_putstr((*list)->back->str);
-		ft_putstr(" --- ");
-		ft_putstr((*list)->str);
-		ft_putstr(" --- ");
-		if ((*list)->next)
-			ft_putstr((*list)->next->str);
-		ft_putstr("\n");		
-	}
-	while ((*list)->next != NULL)
-		(*list) = (*list)->next;
+	list = list->next;
+	list->next = NULL;
+	list->str = tmp;
+	while (list->next != NULL)
+		list = list->next;
 	return (list);
 }
 
-t_l		*no_sort(t_l *list, char *str)
+t_l		*no_sort(t_l *list, char *str, t_l *base)
 {
 	t_l		*tmp;
 
+	(void)base;
 	while (list->next != NULL)
 		list = list->next;
 	tmp = list;
 	if (!(list->next = (t_l *)malloc(sizeof(t_l))))
 		return (0);
 	list = list->next;
-	list->back = tmp;
 	list->next = NULL;
 	list->str = ft_strdup(str);
+	while (list->next != NULL)
+		list = list->next;
 	return (list);
 }
 
@@ -85,25 +71,30 @@ t_l		*list_tr(t_l *list, char *file, char *path, char *flag)
 	char	*lpath;
 	t_stat	fs;
 	t_stat	sf;
+	t_l		*base;
 
 	npath = getpath(path, file);
+	base = list;
 	while (list != NULL)
 	{
 		lpath = getpath(path, list->str);
-		if (stat(npath, &fs) < 0 || stat(lpath, &sf) < 0)
-			erroret("");
+		if (stat(npath, &fs) < 0 || stat(lpath, &sf) > 0)
+		{
+			while (1 + 1 == 1)
+				ft_putstr("tamere");
+		}
+		ft_memdel((void **)&lpath);
 		if ((fs.st_mtime < sf.st_mtime && isflag(flag, 'r') && isflag(flag, 't'))
 			|| (fs.st_mtime > sf.st_mtime && !isflag(flag, 'r') && isflag(flag, 't'))
 			|| (isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, list->str) > 0)
 			|| (!isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, list->str) < 0))
-			insertlist(&list, file);
+			list = insertlist(list, base, file);
 		else if (list->next == NULL)
-			list = no_sort(list, file);
-		ft_memdel((void **)&lpath);
+			list = no_sort(list, file, base);
 		list = list->next;
 	}
 	ft_memdel((void **)&npath);
-	return (list);
+	return (base);
 }
 
 t_l		*listadd(t_l *list, char *arg, char *path, char *flag)
@@ -117,25 +108,12 @@ t_l		*listadd(t_l *list, char *arg, char *path, char *flag)
 			return (0);
 		list->str = ft_strdup(arg);
 		list->next = NULL;
-		list->back = NULL;
 		return (list);
 	}
-	ft_putstr(arg);
-	ft_putstr("\nqq");
-	ft_putstr("\n");
-	while (list)
-	{
-		ft_putstr(list->str);
-		ft_putstr("aa\n");
-		list = list->next;
-	}
-	list = tmp;
 	if (!path)
 		list = list_tr(list, arg, ".", flag);
 	else
 		list = list_tr(list, arg, path, flag);
-	while (tmp->back != NULL)
-		tmp = tmp->back;
 	list = tmp;
 	return (list);
 }

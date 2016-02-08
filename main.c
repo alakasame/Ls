@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:28:12 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/08 02:00:46 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/08 06:42:07 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int			nextmain(t_l *rtab, char *flag)
 	rep = NULL;
 	while (rtab) // boucle tourne trouve et affiche fichier eatch rep. 
 	{
+		ft_putstr("\n");
 		ft_putstr(rtab->str); // !! si no error, no arg, pas afficher au premier tour
 		ft_putstr(":\n"); //
 		if ((rep = opendir(rtab->str)))
@@ -65,15 +66,7 @@ int			main(int argc, char **argv)
 		else
 			sarg.terror = listadd(sarg.terror, argv[i], NULL, sarg.flag); // !!!!!! ON DOIT RECUP LS FILE
 	}
-	t_l *tmp;
-	tmp = sarg.trep;
-	while (sarg.trep)
-	{
-		ft_putstr(sarg.trep->str);
-		sarg.trep = sarg.trep->next;
-	}
-	sarg.trep = tmp;
-/*	sort(sarg.trep, sarg.flag); //sort is ok
+	sort(sarg.trep, sarg.flag, "."); //sort is ok
 	sor(sarg.terror); //sor is ok;*/
 	sarg.terror = freeafflist(sarg.terror);
 	nextmain(sarg.trep, sarg.flag);
