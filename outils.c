@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/05 19:35:16 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/07 18:56:37 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,3 +31,26 @@ int			isopen(char *str)
 	return (1);
 }
 
+char		*getpath(char *path, char *str)
+{
+	char *way;
+	char *tmp;
+
+	way = ft_strjoin(path, "/");
+	tmp = ft_strjoin(way, str);
+	free(way);
+	return (tmp);
+}
+
+int			ft_lenbr(int n)
+{
+	int i;
+
+	i = 1;
+	while (n >= 10)
+	{
+		i++;
+		n /= 10;
+	}
+	return (i);
+}

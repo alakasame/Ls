@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/03 03:32:05 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/05 19:09:11 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/08 01:41:19 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ t_l		*sort_r(t_l *list, t_l *base)
 	list = list->next;
 	while (list)
 	{
+		ft_putstr(list->str);
 		if (ft_strcmp(list->str, tmp->str) > 0)
 		{
 			mtp = tmp->str;
@@ -102,6 +103,7 @@ t_l		*sort(t_l *list, char *flag)
 	t_l	*base;
 
 	base = list;
+	sor(list);
 	if (isflag(flag, 't'))
 		list = sort_t(list, flag, base);
 	else if (isflag(flag, 'r'))

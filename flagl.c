@@ -6,23 +6,34 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 03:44:46 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/06 01:08:40 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/07 18:47:57 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int			ft_lenbr(int n)
+void		affflagl(char *str, t_aff saff, char *name)
 {
-	int i;
+	t_stat		fs;
 
-	i = 1;
-	while (n > 10)
-	{
-		i++;
-		n /= 10;
-	}
-	return (i);
+	(void)saff;
+	if (lstat(str, &fs) < 0)
+		return ;
+	if (S_ISDIR(fs.st_mode))
+		ft_putstr("d");
+	if (S_ISCHR(fs.st_mode))
+		ft_putstr("c");
+	if (S_ISBLK(fs.st_mode))
+		ft_putstr("b");
+	if (S_ISLNK(fs.st_mode))
+		ft_putstr("l");
+	if (S_ISSOCK(fs.st_mode))
+		ft_putstr("s");
+	if (S_ISFIFO(fs.st_mode))
+		ft_putstr("p");
+	if (S_ISREG(fs.st_mode))
+		ft_putstr("-");
+	nextaff(str, fs, saff, name);
 }
 
 t_aff		recupflagl(char *str, t_aff saff)
@@ -31,24 +42,26 @@ t_aff		recupflagl(char *str, t_aff saff)
 	t_passwd	*user;
 	t_group		*group;
 
-	ft_putstr(str);
-	ft_putstr("\n");
-	if (stat(str, &fs) < 0)
-	{
-		ft_putstr("FS");
+	if (lstat(str, &fs) < 0)
 		return (saff);
-	}
 	if (!(user = getpwuid(fs.st_uid))
 		|| !(group = getgrgid(fs.st_gid)))
 		return (saff);
-	ft_putnbr(ft_lenbr((saff.link = fs.st_nlink)));
-	ft_putstr("\n");
-	ft_putnbr((saff.usr = ft_strlen(user->pw_name)));
-	ft_putstr("\n");
-	ft_putnbr((saff.grp = ft_strlen(group->gr_name)));
-	ft_putstr("\n");
-	ft_putnbr(ft_lenbr((saff.byte = fs.st_size)));
-	ft_putstr("\n");
+	if ((int)ft_lenbr(fs.st_nlink) > saff.link)
+		saff.link = ft_lenbr(fs.st_nlink);
+	if ((int)ft_strlen(user->pw_name) > saff.usr)
+		saff.usr = ft_strlen(user->pw_name);
+	if ((int)ft_strlen(group->gr_name) > saff.grp)
+		saff.grp = ft_strlen(group->gr_name);
+	if (S_ISCHR(fs.st_mode) || S_ISBLK(fs.st_mode))
+	{
+		if (saff.major < ft_lenbr(major(fs.st_rdev)))
+			saff.major = ft_lenbr(major(fs.st_rdev));
+		if (saff.minor < ft_lenbr(minor(fs.st_rdev)))
+			saff.minor = ft_lenbr(minor(fs.st_rdev));
+	}
+	else if (saff.byte < ft_lenbr(fs.st_size))
+		saff.byte = ft_lenbr(fs.st_size);
 	return (saff);
 }
 
@@ -64,17 +77,28 @@ t_aff		inits(t_aff saff)
 	return (saff);
 }
 
-t_l			*flagl(t_l *ftab)
+t_l			*flagl(t_l *ftab, char *path)
 {
 	t_aff		saff;
+	char		*npath;
 	t_l			*tmp;
 
 	saff = inits(saff);
 	tmp = ftab;
 	while (ftab)
 	{
-		saff = recupflagl(ftab->str, saff);		
+		npath = getpath(path, ftab->str);
+		saff = recupflagl(npath, saff);
+		free(npath);
 		ftab = ftab->next;
+	}
+	ftab = tmp;
+	while (ftab)
+	{
+		npath = getpath(path, ftab->str);
+		affflagl(npath, saff, ftab->str);
+		free(npath);
+		ftab = listdelone(ftab);
 	}
 	return (0);
 }

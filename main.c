@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:28:12 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/05 22:40:01 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/08 02:00:46 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int			nextmain(t_l *rtab, char *flag)
 			return (erroret(rtab->str));
 		if (closedir(rep) == -1)
 			return (erroret(""));
-		ft_putstr("\n");
 		free(rtab->str);
 		tmp = rtab->next;
 		free(rtab);
@@ -58,16 +57,24 @@ int			main(int argc, char **argv)
 	sarg.terror = NULL;
 	i = searchflag(argv, &sarg.flag, argc);
 	if (i + 1 == argc)
-		sarg.trep = listadd(sarg.trep, ".");
+		sarg.trep = listadd(sarg.trep, ".", NULL, sarg.flag);
 	while (argc > ++i) // i = nb argvflag - 1 et flag is ok;
 	{
 		if (isopen(argv[i]))
-			sarg.trep = listadd(sarg.trep, argv[i]); // LIST ADD ok;
+			sarg.trep = listadd(sarg.trep, argv[i], NULL, sarg.flag); // LIST ADD ok;
 		else
-			sarg.terror = listadd(sarg.terror, argv[i]);
+			sarg.terror = listadd(sarg.terror, argv[i], NULL, sarg.flag); // !!!!!! ON DOIT RECUP LS FILE
 	}
-	sort(sarg.trep, sarg.flag); //sort is ok
-	sor(sarg.terror); //sor is ok;
+	t_l *tmp;
+	tmp = sarg.trep;
+	while (sarg.trep)
+	{
+		ft_putstr(sarg.trep->str);
+		sarg.trep = sarg.trep->next;
+	}
+	sarg.trep = tmp;
+/*	sort(sarg.trep, sarg.flag); //sort is ok
+	sor(sarg.terror); //sor is ok;*/
 	sarg.terror = freeafflist(sarg.terror);
 	nextmain(sarg.trep, sarg.flag);
 	free(sarg.flag);
