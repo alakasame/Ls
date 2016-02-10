@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/05 19:33:06 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/08 05:58:25 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/09 05:09:56 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ t_l     *afffile(t_l *ftab, char *flag, char *path)
 	while (ftab)
 	{
 		ft_putstr(ftab->str);
-		ft_putstr("\n");
+		ft_putstr("\t");
         free(ftab->str); // Tester listdelone
         tmp = ftab->next;
         free(ftab);

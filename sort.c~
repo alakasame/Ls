@@ -6,11 +6,23 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/03 03:32:05 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/04 01:44:24 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/09 11:07:23 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+int istrue(char *flag, char *file, char *lol, char *path)
+{
+	char *npath;
+	char *lpath;
+
+	npath = getfile(path, file);
+	if (path)
+	{
+		
+	}
+}
 
 t_l		*sor(t_l *list)
 {
@@ -47,18 +59,26 @@ void	sortswap(t_l *tmp, t_l *list)
 	list->str = mtp;
 }
 
-t_l		*sort_t(t_l *list, char *flag, t_l *base)
+t_l		*sort_t(t_l *list, char *flag, t_l *base, char *path)
 {
 	t_stat	fs;
 	t_stat	sf;
 	t_l		*tmp;
+	char	*npath;
+	char	*xpath;
 
 	tmp = list;
 	list = list->next;
 	while (list)
 	{
-		if (stat(list->str, &fs) < 0 || stat(tmp->str, &sf) < 0)
+		xpath = getpath(path, tmp->str);
+		npath = getpath(path, list->str);
+		ft_putstr("/nPATH ______________");
+		ft_putstr(npath);
+		if (stat(npath, &fs) < 0 || stat(xpath, &sf) < 0)
 			return (0);
+		ft_memdel((void *)&npath);
+		ft_memdel((void *)&xpath);
 		if (isflag(flag, 'r') && fs.st_mtime < sf.st_mtime)
 		{
 			sortswap(tmp, list);
@@ -84,6 +104,7 @@ t_l		*sort_r(t_l *list, t_l *base)
 	list = list->next;
 	while (list)
 	{
+		ft_putstr(list->str);
 		if (ft_strcmp(list->str, tmp->str) > 0)
 		{
 			mtp = tmp->str;
@@ -97,14 +118,14 @@ t_l		*sort_r(t_l *list, t_l *base)
 	return (base);	
 }
 
-t_l		*sort(t_l *list, char *flag)
+t_l		*sort(t_l *list, char *flag, char *path)
 {
 	t_l	*base;
 
 	base = list;
 	sor(list);
 	if (isflag(flag, 't'))
-		list = sort_t(list, flag, base);
+		list = sort_t(list, flag, base, path);
 	else if (isflag(flag, 'r'))
 		list = sort_r(list, base);
 	return (list);

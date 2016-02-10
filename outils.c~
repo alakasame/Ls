@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/04 09:05:55 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/07 18:56:37 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,64 +20,6 @@ int			erroret(char *str)
 	return (0);
 }
 
-t_l			*freeafflist(t_l *list)
-{
-	DIR *rep;
-	t_l *listnext;
-
-	while (list)
-	{
-		if (!(rep = opendir(list->str)))
-			erroret(list->str);
-		listnext = list->next;
-		free(list->str);
-		free(list);
-		list = listnext;
-	}
-	list = NULL;
-	return (list);
-}
-
-t_l		*afffile(t_l *ftab, char *flag)
-{
-	t_l		*tmp;
-	char	*str;
-
-	str = NULL;
-	while (ftab)
-	{
-		if (isflag(flag, 'l'))
-			str = affflagl(ftab->str, str);
-		else
-		{
-			ft_putstr(ftab->str);
-			ft_putstr("\t");
-		}
-		free(ftab->str);
-		tmp = ftab->next;
-		free(ftab);
-		ftab = tmp;
-	}
-	ftab = NULL;
-	return (ftab);
-}
-
-t_work		recupft(t_work file, DIR *rep, t_dirent *ent)
-{
-	while ((ent = readdir(rep)))
-	{
-		if ((isflag(file.flag, 'a') || ent->d_name[0] != '.')
-			&& isopen(ent->d_name) && ft_strcmp(ent->d_name, ".")
-			&& ft_strcmp(ent->d_name, ".."))
-			file.rtab = listadd(file.rtab, ent->d_name);
-		if (isflag(file.flag, 'a') || ent->d_name[0] != '.')
-			file.ftab = listadd(file.ftab, ent->d_name);
-	}
-	sort(file.ftab, file.flag);
-	sort(file.rtab, file.flag);
-	return (file);
-}
-
 int			isopen(char *str)
 {
 	DIR *rep;
@@ -89,3 +31,26 @@ int			isopen(char *str)
 	return (1);
 }
 
+char		*getpath(char *path, char *str)
+{
+	char *way;
+	char *tmp;
+
+	way = ft_strjoin(path, "/");
+	tmp = ft_strjoin(way, str);
+	free(way);
+	return (tmp);
+}
+
+int			ft_lenbr(int n)
+{
+	int i;
+
+	i = 1;
+	while (n >= 10)
+	{
+		i++;
+		n /= 10;
+	}
+	return (i);
+}

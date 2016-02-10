@@ -6,17 +6,116 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/03 02:06:00 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/03 03:26:34 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/09 06:01:11 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_l		*listadd(t_l *list, char *arg)
+t_l		*listdelone(t_l *list)
 {
-	t_l *tmp;
+	t_l	*tmp;
 
-	tmp = list;
+	tmp = list->next;
+	free(list->str);
+	list = tmp;
+	return (list);
+}
+
+t_l		*insertlist(t_l **list, t_l **base, t_l **back, char *str)
+{
+	t_l		*tmp;
+
+	ft_putstr(str);
+	tmp = listadd(NULL, str, NULL, NULL);
+	tmp->next = (*base);
+	if (back)
+	{
+		(*back)->next = tmp;
+		return ((*list));		
+	}
+	return (tmp);
+}
+
+t_l		*no_sort(t_l **tmp, char *str)
+{
+	t_l		*list;
+	t_l		*listnext;
+
+	list = (*tmp);
+	if (ft_strcmp(list->str, str) > 0)
+	{
+		if (!(listnext = (t_l *)malloc(sizeof(t_l))))
+			return (0);
+		listnext->str = ft_strdup(str);
+		listnext->next = list;
+		return (listnext);
+	}
+	listnext = list->next;
+	while (listnext != NULL)
+	{
+		if (ft_strcmp(listnext->str, str) > 0)
+		{
+			listnext = listadd(NULL, str, NULL, NULL);
+			listnext->str = ft_strdup(str);
+			listnext->next = list->next;
+			list->next = listnext;
+			return ((*tmp));
+		}			
+		list = listnext;
+		listnext = list->next;
+	}
+	if (!(listnext = (t_l *)malloc(sizeof(t_l))))
+		return (0);
+	listnext->str = ft_strdup(str);
+	listnext->next = list->next;
+	list->next = listnext;
+	return ((*tmp));
+}
+
+t_l		*list_tr(t_l **list, char *file, char *path, char *flag)
+{
+	char	*npath;
+	char	*lpath;
+	t_stat	fs;
+	t_stat	sf;
+	t_l		*base;
+	t_l		*tmp;
+
+	npath = getpath(path, file);
+	base = (*list);
+	while (base != NULL)
+	{
+		lpath = ft_strjoin(base->str, "/");
+		if (stat(npath, &fs) < 0 || stat(lpath, &sf) < 0)
+		{
+			while (1 + 1 == 1)
+				ft_putstr("taoere");
+		}
+		ft_putstr(lpath);
+		ft_putstr(path);
+		ft_putstr("\n");
+		ft_memdel((void **)&lpath);
+		if ((fs.st_mtime < sf.st_mtime && isflag(flag, 'r') && isflag(flag, 't'))
+			|| (fs.st_mtime > sf.st_mtime && !isflag(flag, 'r') && isflag(flag, 't'))
+			|| (isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, base->str) > 0)
+			|| (!isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, base->str) < 0))
+			return ((insertlist(&base, list, &tmp, file)));
+		else if (base->next == NULL)
+			base->next = listadd(NULL, file, NULL, NULL);
+		base = base->next;
+		if (tmp)
+			tmp = tmp->next;
+		else
+			tmp = (*list);
+	}
+	ft_memdel((void **)&npath);
+	return ((*list));
+}
+
+t_l		*listadd(t_l *list, char *arg, char *path, char *flag)
+{
+	ft_putstr("tamere");
 	if (!(list))
 	{
 		if (!(list = (t_l *)malloc(sizeof(t_l))))
@@ -25,12 +124,11 @@ t_l		*listadd(t_l *list, char *arg)
 		list->next = NULL;
 		return (list);
 	}
-	while (list->next != NULL)
-		list = list->next;
-	if (!(list->next = (t_l *)malloc(sizeof(t_l))))
-		return (0);
-	list->next->next = NULL;
-	list->next->str = ft_strdup(arg);
-	list = tmp;
+	if (!path || !flag || (flag && !isflag(flag, 't') && !isflag(flag, 'r')))
+		list = no_sort(&list, arg);
+	else
+		list = list_tr(&list, arg, path, flag);
+	(void)path;
+	(void)flag;
 	return (list);
 }

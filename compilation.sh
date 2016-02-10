@@ -1,1 +1,1 @@
-gcc -g -Wall -Werror -Wextra -L./libft -lft -I./libft/includes main.c flag.c list.c outils.c sort.c aff.c recupft.c
+gcc -g -Wall -Werror -Wextra -L./libft -lft -I./libft/includes main.c flag.c list.c outils.c sort.c aff.c recupft.c flagl.c

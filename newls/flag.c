@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 09:23:53 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/03 01:32:09 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/10 01:27:02 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,35 +44,46 @@ char	*conflag(char *str, char *flag)
 int		searchflag(char **argv, char **flag, int argc)
 {
 	int		i;
-	int		c;
 	int		d;
 
 	d = 0;
-	c = 0;
 	i = 0;
 	if (!(*flag = (char *)malloc(sizeof(char) * 6)))
 		return (0);
 	ft_bzero(*flag, 6);
 	while (++i < argc)
 	{
-		if (argv[i][0] == '-' && c == 0)
+		if (argv[i][0] == '-')
 		{
 			*flag = conflag(argv[i], *flag);
 			d++;
 		}
 		else
-			c = 1;
+			while ((i - 1) < argc)
+				i++;
 	}
 	return (d);
 }
 
-int		isflag(char *str, char a)
+int		isflag(char *str, char *a)
 {
 	int i;
+	int n;
+	int b;
 
+	b = 0;
+	n = 0;
 	i = -1;
 	while (str[++i])
-		if (str[i] == a)
-			return (1);
+	{
+		if (str[i] == a[b])
+		{
+			n++;
+			b++;
+			i = -1;
+		}
+	}
+	if ((size_t)n == ft_strlen(a))
+		return (1);
 	return (0);
 }

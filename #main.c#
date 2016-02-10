@@ -12,34 +12,7 @@
 
 #include "ft_ls.h"
 
-int			nextmain(t_l *path, char *flag)
-{
-	DIR			*rep;
-	t_dirent	*ent;
-	t_arg		file;
-	t_l			*tmp;
 
-	file.file = NULL;
-	file.path = NULL;
-	file.flag = flag;
-	ent = NULL;
-	rep = NULL;
-	while (path) // boucle tourne trouve et affiche fichier eatch rep. 
-	{
-		ft_putstr(path->str); // !! si no error, no arg, pas afficher au premier tour
-		ft_putstr(":\n"); //
-		if ((rep = opendir(path->str)))
-		{
-			file.path = recupft(file, rep, ent, path->str); // on recup les dossiers et fichiers;
-			if (closedir(rep) == -1)
-				return (erroret(""));
-		}
-		else
-			erroret(path->str);
-		ft_putstr("lol");
-		ft_putstr("\n");
-		free(path->str);
-		tmp = path->next;
 		free(path);
 		path = tmp;
 		if (isflag(flag, 'R') && file.path)

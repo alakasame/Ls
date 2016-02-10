@@ -6,11 +6,46 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/03 03:32:05 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/08 06:49:42 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/09 11:32:28 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+//		|| (fs.st_mtime > sf.st_mtime && !isflag(flag, 'r') && isflag(flag, 't'))
+//	|| (isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, sl) > 0) 
+//	|| (!isflag(flag, 'r') && !isflag(flag, 't') && ft_strcmp(file, sl) < 0))
+
+int istrue(char *flag, char *file, char *sl, char *path)
+{
+	char *npath;
+	char *lpath;
+	t_stat	fs;
+	t_stat sf;
+	int		i;
+	int		c;
+
+	c = 0;
+	i = 0;
+	if (path)
+	{
+		npath = getpath(path, file);
+		lpath = getpath(path, sl);
+		c = -1;
+	}
+	else
+	{
+		npath = file;
+		lpath = sl;
+	}
+	if (fs.st_mtime < sf.st_mtime && isflag(flag, 'r') && isflag(flag, 't'))
+		i = 1;
+	if (c == -1)
+	{
+		ft_memdel((void **)&npath);
+		ft_memdel((void **)&lpath);
+	}
+	return (i);
+}
 
 t_l		*sor(t_l *list)
 {

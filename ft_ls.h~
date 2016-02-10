@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/15 08:13:18 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/04 08:55:44 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/09 05:25:46 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,43 +36,42 @@ typedef struct			s_l
 
 typedef struct			s_aff
 {
-	int		tailleline;
-	int		tailletab;
-	int		tailleblock;
-	char	**tab;
-	char	*flag;
-	int		*sort;
+	int		link;
+	int		usr;
+	int		grp;
+	int		byte;
+	int		day;
+	int		minor;
+	int		major;
 }						t_aff;
 
 typedef struct			s_arg
 {
 	char				*flag;
-	t_l					*trep;
-	t_l					*terror;
+	t_l					*path;
+	t_l					*file;
 }						t_arg;
-
-typedef struct			s_work
-{
-	char				*flag;
-	t_l					*rtab;
-	t_l					*ftab;
-}						t_work;
 
 int						searchflag(char **argv, char **flag, int argc);
 int						onlyflag(char **argv, int argc);
-int						ft_ls1(char const *str);
-int						ft_ls3(char const *str, char *flag);
-int						ft_ls2(int argc, char **argv, char *flag);
 int						isflag(char *flag, char a);
 int						erroret(char *str);
 int						isopen(char *str);
+int						isfile(char *str);
+int						ft_lenbr(int n);
+char					*getpath(char *str, char *tmp);
 char					**getfile(char *str, char **tab, int c);
-t_l						*listadd(t_l *list, char *arg);
+t_l						*listadd(t_l *list, char *arg, char *path, char *flag);
+t_l						*list_tr(t_l **list, char *arg, char *path, char *flag);
+t_l						*no_sort(t_l **list, char *arg);
+t_l						*listdelone(t_l *list);
 t_l						*freeafflist(t_l *list);
-t_l						*sor(t_l *list);
-t_l						*sort(t_l *list, char *flag);
-t_work					recupft(t_work file, DIR *rep, t_dirent *ent);
-t_l						*afffile(t_l *ftab, char *flag);
-char					*affflagl(char *str, char *tmp);
+//t_l						*sor(t_l *list);
+//t_l						*sort(t_l *list, char *flag, char *path);
+t_l						*recupft(t_arg file, DIR *rep, t_dirent *ent, char *path);
+t_l						*afffile(t_l *ftab, char *flag, char *path);
+t_l						*flagl(t_l *flag, char *path);
+void					affflagl(char *str, t_aff saff, char *name);
+void					nextaff(char *str, t_stat fs, t_aff saff, char *name);
 
 #endif
