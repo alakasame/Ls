@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 02:58:02 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/10 08:10:50 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,25 @@ int			isdirorfile(char *str)
 	DIR *rep;
 	t_stat fs;
 
-	if (lstat(str, &fs) < 0)
-		return (0);
 	if ((rep = opendir(str)))
 	{
 		if (closedir(rep) == -1)
 			return (erroret(str));
 		return (1);
 	}
+	if (lstat(str, &fs) < 0)
+		return (0);
 	return (2);
+}
+
+t_l			*gofreenext(t_l *list)
+{
+	t_l	*tmp;
+
+	tmp = list->next;
+	free(list->str);
+	free(list);
+	return (tmp);
 }
 
 char		*getpath(char *path, char *str)

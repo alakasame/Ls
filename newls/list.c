@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/10 01:27:40 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 04:48:09 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/10 08:21:56 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,11 @@ t_l	*initlist(t_l **file, char *str, char *flag, char *path)
 		ft_putstr("\n LIST T \n");
 		return (listt(file, str, path));
 	}
-/*	if (isflag(flag, "r"))
-	return (listr(file, str));*/
-	return (0);//(alphalistsort(file, str));
+	if (isflag(flag, "r"))
+	{
+		ft_putstr("\n LIST R \n");
+		return (listr(file, str));
+	}
+//	ft_putstr("\n LIST Alpha \n");	
+	return (alphalistsort(file, str));
 }

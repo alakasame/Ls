@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/15 08:13:18 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 04:38:23 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/10 08:57:20 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ typedef struct			s_arg
 	t_l					*file;
 	t_stat				fs;
 	t_stat				sf;
+	t_dirent			*ent;
+	DIR					*rep;
+	int					y;
 }						t_arg;
 
 int						searchflag(char **argv, char **flag, int argc);
@@ -62,6 +65,7 @@ int						onlyflag(char **argv, int argc);
 int						isflag(char *flag, char *a);
 int						erroret(char *str);
 int						isdirorfile(char *str);
+t_l						*gofreenext(t_l *op);
 int						isfile(char *str);
 int						istrue(char *flag, char *file, char *sl, char *path);
 int						ft_lenbr(int n);
@@ -70,12 +74,15 @@ char					**getfile(char *str, char **tab, int c);
 t_l						*listadd(char *str);
 t_l						*initlist(t_l **file, char *str, char *flag, char *path);
 t_l						*listt(t_l **file, char *str, char *path);
+t_l						*listr(t_l **file, char *str);
+t_l						*alphalistsort(t_l **file, char *str);
 t_l						*freeret(char **lpath, char **npath, t_l *list);
 t_l						*cond1(t_arg *stmp, t_l **file);
 t_l						*list_tr(t_l **list, char *arg, char *path, char *flag);
 t_l						*no_sort(t_l **list, char *arg);
 t_l						*listdelone(t_l *list);
-t_l						*freeafflist(t_l *list);
+t_l						*errorlist(t_l **list);
+t_l						*freeafflist(t_l **list, char *path, char *flag);
 //t_l						*sor(t_l *list);
 //t_l						*sort(t_l *list, char *flag, char *path);
 t_l						*recupft(t_arg file, DIR *rep, t_dirent *ent, char *path);
