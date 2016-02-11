@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/15 08:13:18 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 08:57:20 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/11 15:33:36 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_LS_H
 # include "libft/includes/libft.h"
 # include <sys/types.h>
+# include <sys/xattr.h>
 # include <sys/stat.h>
 # include <dirent.h>
 # include <errno.h>
@@ -37,13 +38,16 @@ typedef struct			s_l
 
 typedef struct			s_aff
 {
-	int		link;
-	int		usr;
-	int		grp;
-	int		byte;
-	int		day;
-	int		minor;
-	int		major;
+	int					block;
+	int					link;
+	int					usr;
+	int					uid;
+	int					gid;
+	int					grp;
+	int					byte;
+	int					day;
+	int					minor;
+	int					major;
 }						t_aff;
 
 typedef struct			s_arg
@@ -58,6 +62,7 @@ typedef struct			s_arg
 	t_dirent			*ent;
 	DIR					*rep;
 	int					y;
+	int					o;
 }						t_arg;
 
 int						searchflag(char **argv, char **flag, int argc);
@@ -82,12 +87,12 @@ t_l						*list_tr(t_l **list, char *arg, char *path, char *flag);
 t_l						*no_sort(t_l **list, char *arg);
 t_l						*listdelone(t_l *list);
 t_l						*errorlist(t_l **list);
-t_l						*freeafflist(t_l **list, char *path, char *flag);
+t_l						*freeafflist(t_l **list, char *path, char *flag, int i);
 //t_l						*sor(t_l *list);
 //t_l						*sort(t_l *list, char *flag, char *path);
 t_l						*recupft(t_arg file, DIR *rep, t_dirent *ent, char *path);
 t_l						*afffile(t_l *ftab, char *flag, char *path);
-t_l						*flagl(t_l *flag, char *path);
+t_l						*flagl(t_l *flag, char *path, int i);
 void					affflagl(char *str, t_aff saff, char *name);
 void					nextaff(char *str, t_stat fs, t_aff saff, char *name);
 

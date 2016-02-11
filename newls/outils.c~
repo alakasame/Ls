@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 06:16:16 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/11 08:24:29 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,18 @@ int			isdirorfile(char *str)
 		return (1);
 	}
 	if (lstat(str, &fs) < 0)
-		return (0);
+		return (0);		
 	return (2);
+}
+
+t_l			*gofreenext(t_l *list)
+{
+	t_l	*tmp;
+
+	tmp = list->next;
+	free(list->str);
+	free(list);
+	return (tmp);
 }
 
 char		*getpath(char *path, char *str)

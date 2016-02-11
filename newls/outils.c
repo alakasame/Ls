@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 08:35:11 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 08:10:50 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/11 15:10:03 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,36 @@ int			erroret(char *str)
 
 int			isdirorfile(char *str)
 {
-	DIR *rep;
-	t_stat fs;
+	DIR		*rep;
+	t_stat	fs;
+	int		i;
+	char	*link;
 
 	if ((rep = opendir(str)))
 	{
+		if (lstat(str, &fs) < 0)
+			return (0);
+		if (S_ISLNK(fs.st_mode))
+		{
+			if (!(link = (char *)malloc(sizeof(char) * 256)))
+				return (0);
+			if ((i = readlink(str, link, sizeof(link)-1)) != -1)
+			{
+				link[i] = '\0';
+				if (!(ft_strcmp(link, "private")))
+				{
+					free(link);
+					return (2);
+				}
+			}
+			free(link);
+		}
 		if (closedir(rep) == -1)
 			return (erroret(str));
 		return (1);
 	}
-	if (lstat(str, &fs) < 0)
-		return (0);
+	if (S_ISDIR(fs.st_mode))
+		return (1);
 	return (2);
 }
 
@@ -53,6 +72,8 @@ char		*getpath(char *path, char *str)
 	int		i;
 
 	i = ft_strlen(path);
+	if (str[0] == '/')
+		return (ft_strdup(str));
 	if (path[i - 1] != '/')
 	{
 		way = ft_strjoin(path, "/");

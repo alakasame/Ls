@@ -6,7 +6,7 @@
 /*   By: cmichaud <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/05 19:33:06 by cmichaud          #+#    #+#             */
-/*   Updated: 2016/02/10 10:00:55 by cmichaud         ###   ########.fr       */
+/*   Updated: 2016/02/11 15:38:04 by cmichaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void	ultraeasy(char *path, t_stat fs, char *name, t_aff saff)
 				ft_putstr(", ");
 				free(str);
 				i = ft_lenbr(minor(fs.st_rdev));
-				while (saff.minor > i++)
-						ft_putstr(" ");
+				while (saff.byte > i++)
+					ft_putstr(" ");
 				ft_putstr((str = ft_itoa(minor(fs.st_rdev))));
 				free(str);
 			}
@@ -48,7 +48,7 @@ void	ultraeasy(char *path, t_stat fs, char *name, t_aff saff)
 				ft_putstr(", ");
 				free(str);
 				i = ft_lenbr(minor(fs.st_rdev));
-				while (saff.minor > i++)
+				while (saff.byte > i++)
 					ft_putstr(" ");
 				ft_putstr((str = ft_itoa(minor(fs.st_rdev))));
 				free(str);
@@ -59,7 +59,7 @@ void	ultraeasy(char *path, t_stat fs, char *name, t_aff saff)
 			if ((saff.minor + saff.major + 2) > saff.byte)
 			{
 				i = ft_lenbr(fs.st_size);
-				while ((saff.minor + saff.major + 3) > i++)
+				while ((saff.byte + saff.major + 3) > i++)
 					ft_putstr(" ");
 				ft_putstr((str = ft_itoa(fs.st_size)));
 				free(str);
@@ -98,9 +98,10 @@ void	ultraeasy(char *path, t_stat fs, char *name, t_aff saff)
 		while (!ft_isdigit(str[++i]))
 			write(1, &str[i], 1);
 		write(1, &str[i++], 1);
-		i += 9;
-		ft_putstr(" ");
-		write(1, &str[i], 5);
+		write(1, &str[i++], 1);
+		i += 10;
+		ft_putstr("  ");
+		write(1, &str[i], 4);
 	}
 	ft_putstr(" ");
 	ft_putstr(name);
@@ -112,11 +113,10 @@ void	ultraeasy(char *path, t_stat fs, char *name, t_aff saff)
 			str[i] = '\0';
 		ft_putstr(" -> ");
 		ft_putstr(str);
+		if (!(ft_strcmp(str, "private")))
+			ft_putstr(name);
 	}
 	free(str);
-	ft_putstr("\n");
-	(void)path;
-	(void)name;
 }
 
 void	easynextl(char *path, t_stat fs, char *name, t_aff saff)
@@ -124,16 +124,37 @@ void	easynextl(char *path, t_stat fs, char *name, t_aff saff)
 	int			i;
 	t_passwd	*user;
 	t_group		*group;
+	char		*str;
 
 	if (!(group = getgrgid(fs.st_gid)) || !(user = getpwuid(fs.st_uid)))
 		return ;
-	ft_putstr(user->pw_name);
-	i = ft_strlen(user->pw_name);
+	if (!user->pw_name)
+	{
+		str = ft_itoa(user->pw_uid);
+		ft_putstr(str);
+		i = ft_strlen(str);
+		free(str);
+	}
+	else
+	{
+		ft_putstr(user->pw_name);
+		i = ft_strlen(user->pw_name);
+	}
 	while (saff.usr > i++)
 		ft_putstr(" ");
 	ft_putstr("  ");
-	ft_putstr(group->gr_name);
-	i = ft_strlen(group->gr_name);
+	if (!group->gr_name)
+	{
+		str = ft_itoa(group->gr_gid);
+		ft_putstr(str);
+		i = ft_strlen(str);
+		free(str);
+	}
+	else
+	{
+		ft_putstr(group->gr_name);
+		i = ft_strlen(group->gr_name);
+	}
 	while (saff.grp > i++)
 		ft_putstr(" ");
 	ft_putstr("  ");
@@ -154,7 +175,10 @@ void	nextaff(char *path, t_stat fs, t_aff saff, char *name)
     fs.st_mode & S_IROTH ? ft_putstr("r") : ft_putstr("-");
     fs.st_mode & S_IWOTH ? ft_putstr("w") : ft_putstr("-");
     fs.st_mode & S_IXOTH ? ft_putstr("x") : ft_putstr("-");
-	ft_putstr("  ");
+	if (listxattr(path, NULL, 0, 0))
+		ft_putstr("@ ");
+	else
+		ft_putstr("  ");
 	i = ft_lenbr(fs.st_nlink);
 	while (saff.link > i++)
 		ft_putstr(" ");
